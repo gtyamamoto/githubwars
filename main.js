@@ -16,13 +16,13 @@ class UserGitHub {
 
 async function getApiGitHub(firstName, lastName) {
     const firstUser = await request(firstName);
-    if(firstUser.status && firstUser.status == 401) {
-        return null;
+    if( firstUser.status == 401) {
+        return {firstUserGitHub:null,lastUserGitHub:null};
     }
 
     const lastUser = await request(lastName);
-    if(firstUser.status && firstUser.status == 401) {
-        return null;
+    if( firstUser.status == 401) {
+        return {firstUserGitHub:null,lastUserGitHub:null};
     }
 
     const firstUserGitHub = new UserGitHub(firstUser);
@@ -77,31 +77,84 @@ function clearUser(number) {
         inputFirst.textContent=''
         totalFirst.textContent=''
         imgFirst.setAttribute('src','')
-
+        
+        listPointFirst.innerHTML=''
+        document.querySelector('.img-wins-one').style.display='none'
 
     }else{
         inputLast.textContent=''
         totalLast.textContent=''
         imgLast.setAttribute('src','')
+        listPointLast.innerHTML=''
+        document.querySelector('.img-wins-two').style.display='none'
 
     }
 }   
+function createListPoints (firstUser,element){
+     let stringHTML = ''
+     stringHTML+=`<tr><td>Rep Publico</td>
+     <td>${firstUser.publicRepository}</td>
+     <td>${firstUser.publicRepository*20}</td>
+     </tr>
+     <tr><td>Followers</td>
+     <td>${firstUser.followers}</td>
+     <td>${firstUser.followers*10}</td>
+     </tr>
+     <tr><td>Seguindo</td>
+     <td>${firstUser.following}</td>
+     <td>${firstUser.following*5}</td>
+     </tr>
+     <tr><td>Estrelas</td>
+     <td>${firstUser.stars}</td>
+     <td>${firstUser.stars*10}</td>
+     </tr>
+     <tr><td>Gists</td>
+     <td>${firstUser.publicgists}</td>
+     <td>${firstUser.publicgists*5}</td>
+     </tr>
+     
+     
+     `
+    element.innerHTML = stringHTML
+}
 
 btnStart.addEventListener('click',async (e)=>{
    const {firstUserGitHub,lastUserGitHub} = await getApiGitHub(inputFirst.value,inputLast.value);
    console.log(firstUserGitHub,lastUserGitHub)
-    if(firstUserGitHub===null||lastUserGitHub===null){
-        if(!firstUserGitHub) clearUser('one')
-        if(!lastUserGitHub) clearUser('two')
+   clearUser('one')
+   clearUser('two')
+    if(firstUserGitHub==null||lastUserGitHub==null){
+        if(!firstUserGitHub) {clearUser('one')
+        document.querySelector('.not-found-profile-one').style.display='block'
+    
+    }
+        if(!lastUserGitHub) {
+            
+            clearUser('two')
+            document.querySelector('.not-found-profile-two').style.display='block'
+        }
     }
    const { starGazerOne,
     starGazerTwo} = await getStartsFromUser(inputFirst.value,inputLast.value);
     firstUserGitHub.setStarts(starGazerOne)
     lastUserGitHub.setStarts(starGazerTwo)
+    createListPoints(firstUserGitHub,listPointFirst)
+    createListPoints(lastUserGitHub,listPointLast)
     const countFirst = count(firstUserGitHub)
     const countSecond = count(lastUserGitHub)
     console.log(countFirst,countSecond)
     totalFirst.textContent = countFirst
     totalLast.textContent = countSecond
+    imgFirst.setAttribute('src',firstUserGitHub.foto)
+    imgLast.setAttribute('src',lastUserGitHub.foto)
+    document.querySelector('.not-found-profile-one').style.display='none'
+    document.querySelector('.not-found-profile-two').style.display='none'
+    if(countFirst>=countSecond){
 
+        document.querySelector('.img-wins-one').style.display='block'
+    }
+    else{
+        document.querySelector('.img-wins-two').style.display='block'
+
+    }
 })

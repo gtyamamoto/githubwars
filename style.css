@@ -29,6 +29,12 @@
     align-items: center;
     justify-content: space-around;
 }
+.img-wins-one,.img-wins-two{
+    display: none;
+    text-align: center;
+    font-weight: 600;
+    font-size: 20px;
+}
 .img-player{
     width:250px;
     height: 250px;
@@ -60,6 +66,9 @@ table {
   }
 .playerResult > *{
     margin:20px;
+}
+.not-found-profile-one,.not-found-profile-two{
+    display:none;
 }
 .playerdata,#versusSymbol{
  margin:10px;
