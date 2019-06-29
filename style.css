@@ -1,11 +1,75 @@
 .main{
     display:flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     flex-direction: column;
     padding: 20px;
+    flex-wrap: wrap;
+    border:5px solid black;
+    font-family: 'Montserrat', sans-serif;
+}
+.not-found-profile-one{
+    
+    color:red;
+}
+.not-found-profile-two{
+    
+    color:red;
 }
 .players{
     display: flex;
     
+    align-items: baseline;
+    justify-content: space-around;
+
+}
+.results{
+    display:flex;
+    padding:20px;
+    align-items: center;
+    justify-content: space-around;
+}
+.img-player{
+    width:250px;
+    height: 250px;
+    background:grey;
+}
+.playersResults{
+    display:flex;
+    padding:20px;
+    justify-content: space-around;
+
+}
+.playerResult{
+    margin:20px;
+    display:flex;
+    padding:20px;
+    flex-direction: column;
+    justify-content: space-around;
+}
+table, th, td {
+    border: 1px solid black;
+  }
+table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  th {
+    height: 50px;
+  }
+.playerResult > *{
+    margin:20px;
+}
+.playerdata,#versusSymbol{
+ margin:10px;
+}
+#btn-startfight{
+    margin:10px 0;
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    display: block;
+    border: 1px solid black;
 }
