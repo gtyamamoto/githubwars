@@ -21,7 +21,7 @@ async function getApiGitHub(firstName, lastName) {
     }
 
     const lastUser = await request(lastName);
-    if(lastUser.status && lastUser.status == 401)
+    /* if(lastUser.status && lastUser.status == 401) */
 
     const firstUserGitHub = new UserGitHub(firstUser);
     const lastUserGitHub = new UserGitHub(lastUser);
@@ -31,10 +31,11 @@ async function getApiGitHub(firstName, lastName) {
     }
 }
 async function getStartsFromUser(firstName,lastName){
-    const requestStarsFirst = await request(firstName);
-    const requestStarsSecond = await request(lastName);
+    const requestStarsFirst = await request(firstName,false);
+    const requestStarsSecond = await request(lastName,false);
     const starGazerOne = requestStarsFirst.reduce((prev,curr)=>prev.stargazers_count+curr.stargazers_count,0)
     const starGazerTwo = requestStarsSecond.reduce((prev,curr)=>prev.stargazers_count+curr.stargazers_count,0)
+   console.log(starGazerOne,starGazerTwo)
     return {
         starGazerOne,
         starGazerTwo
@@ -49,19 +50,36 @@ async function request(user,onlyUser=true) {
     return await fetchData.json();
 }
 
+function count(u){
+    return  (u.publicRepository * 20 +
+                  u.followers * 10 +
+                  u.following * 5 +
+                 // u.stars * 10 +
+                  u.publicgists * 5);
+}
 
 
 //DOM's 
 const btnStart = document.querySelector('#btn-startfight')
 const inputFirst = document.querySelector('#playerone-input')
 const inputLast = document.querySelector('#playertwo-input')
+const totalFirst = document.querySelector('#total-playerone')
+const totalLast = document.querySelector('#total-playertwo')
+const imgFirst = document.querySelector('#playerone-img')
+const imgLast = document.querySelector('#playertwo-img')
 
 
 btnStart.addEventListener('click',async (e)=>{
    const {firstUserGitHub,lastUserGitHub} = await getApiGitHub(inputFirst.value,inputLast.value);
+   console.log(firstUserGitHub,lastUserGitHub)
    const { starGazerOne,
     starGazerTwo} = await getStartsFromUser(inputFirst.value,inputLast.value);
     firstUserGitHub.setStarts(starGazerOne)
     lastUserGitHub.setStarts(starGazerTwo)
-    
+    const countFirst = count(firstUserGitHub)
+    const countSecond = count(lastUserGitHub)
+    console.log(countFirst,countSecond)
+    totalFirst.textContent = countFirst
+    totalLast.textContent = countSecond
+
 })
