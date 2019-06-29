@@ -17,11 +17,13 @@ class UserGitHub {
 async function getApiGitHub(firstName, lastName) {
     const firstUser = await request(firstName);
     if(firstUser.status && firstUser.status == 401) {
-        //return "Usuario não encontrado";
+        return null;
     }
 
     const lastUser = await request(lastName);
-    /* if(lastUser.status && lastUser.status == 401) */
+    if(firstUser.status && firstUser.status == 401) {
+        return null;
+    }
 
     const firstUserGitHub = new UserGitHub(firstUser);
     const lastUserGitHub = new UserGitHub(lastUser);
@@ -33,9 +35,10 @@ async function getApiGitHub(firstName, lastName) {
 async function getStartsFromUser(firstName,lastName){
     const requestStarsFirst = await request(firstName,false);
     const requestStarsSecond = await request(lastName,false);
-    const starGazerOne = requestStarsFirst.reduce((prev,curr)=>prev.stargazers_count+curr.stargazers_count,0)
-    const starGazerTwo = requestStarsSecond.reduce((prev,curr)=>prev.stargazers_count+curr.stargazers_count,0)
-   console.log(starGazerOne,starGazerTwo)
+    console.log(requestStarsFirst,requestStarsSecond)
+    const starGazerOne = requestStarsFirst.reduce((prev,curr)=>prev.stargazers_count+!curr.stargazers_count ? 0 : curr.stargazers_count,0)
+    const starGazerTwo = requestStarsSecond.reduce((prev,curr)=>prev.stargazers_count+!curr.stargazers_count ? 0 : curr.stargazers_count,0)
+    console.log(starGazerOne,requestStarsSecond)
     return {
         starGazerOne,
         starGazerTwo
@@ -54,7 +57,7 @@ function count(u){
     return  (u.publicRepository * 20 +
                   u.followers * 10 +
                   u.following * 5 +
-                 // u.stars * 10 +
+                  u.stars * 10 +
                   u.publicgists * 5);
 }
 
@@ -67,11 +70,30 @@ const totalFirst = document.querySelector('#total-playerone')
 const totalLast = document.querySelector('#total-playertwo')
 const imgFirst = document.querySelector('#playerone-img')
 const imgLast = document.querySelector('#playertwo-img')
+const  listPointFirst = document.querySelector('#player-one-table')
+const  listPointLast = document.querySelector('#player-two-table')
+function clearUser(number) {
+    if(number===1){
+        inputFirst.textContent=''
+        totalFirst.textContent=''
+        imgFirst.setAttribute('src','')
 
+
+    }else{
+        inputLast.textContent=''
+        totalLast.textContent=''
+        imgLast.setAttribute('src','')
+
+    }
+}   
 
 btnStart.addEventListener('click',async (e)=>{
    const {firstUserGitHub,lastUserGitHub} = await getApiGitHub(inputFirst.value,inputLast.value);
    console.log(firstUserGitHub,lastUserGitHub)
+    if(firstUserGitHub===null||lastUserGitHub===null){
+        if(!firstUserGitHub) clearUser('one')
+        if(!lastUserGitHub) clearUser('two')
+    }
    const { starGazerOne,
     starGazerTwo} = await getStartsFromUser(inputFirst.value,inputLast.value);
     firstUserGitHub.setStarts(starGazerOne)
