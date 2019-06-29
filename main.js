@@ -13,14 +13,23 @@ class UserGitHub {
 async function getApiGitHub(firstName, lastName) {
     const firstUser = await request(firstName);
     if(firstUser.status && firstUser.status == 401) {
-        //return "Usuario não encontrado";
+        //return "Usuario não encontrado!";
     }
 
     const lastUser = await request(lastName);
-    if(lastUser.status && lastUser.status == 401)
+    if(lastUser.status && lastUser.status == 401) {
+        //return "Usuario não encontrado!";
+    }
 
     const firstUserGitHub = new UserGitHub(firstUser);
     const lastUserGitHub = new UserGitHub(lastUser);
+}
+
+function count(u){
+    return  (u.publicRepository * 20 +
+                  u.followers * 10 +
+                  u.followers * 5 +
+                  u.publicgists);
 }
 
 async function request(user) {
