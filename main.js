@@ -12,20 +12,22 @@ class UserGitHub {
 
 async function getApiGitHub(firstName, lastName) {
     const firstUser = await request(firstName);
+    if(firstUser.status && firstUser.status == 401) {
+        //return "Usuario não encontrado";
+    }
+
     const lastUser = await request(lastName);
+    if(lastUser.status && lastUser.status == 401)
 
     const firstUserGitHub = new UserGitHub(firstUser);
     const lastUserGitHub = new UserGitHub(lastUser);
-
-
-
 }
 
 async function request(user) {
     //const fetchData = await fetch(`https://api.github.com/users/${user}`);
     const fetchData = await fetch(`https://pokeapi.co/api/v2/pokemon/${user}`);
 
-    if(fetchData.status != 200) { return { "mensagem": "Usuario não encontrado!" }}
+    if(fetchData.status != 200) { return { "status": 401, "mensagem": "Usuario não encontrado!" }}
     
     return await fetchData.json();
 }
